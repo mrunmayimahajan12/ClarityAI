@@ -1,0 +1,13 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.env
+uploads/
+*.egg-info/
+dist/
+build/
+.git/
+docker-compose.yml
