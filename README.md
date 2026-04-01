@@ -46,10 +46,14 @@ Each type has a tailored analysis rubric that guides the AI to focus on what mat
 2. **Extraction** — PDF text is extracted and normalized
 3. **Segmentation** — Document is split into logical sections using heading and numbered-list detection, with a 12K character cap per chunk
 4. **Parallel analysis** — Up to 8 sections are analyzed concurrently via a `ThreadPoolExecutor`. For each section:
-   - A rule engine runs deterministic pattern matching (specific risk keywords, missing terms, one-sided language)
-   - GPT-4o-mini generates a Chain-of-Thought reasoning trace, then produces the summary, risk level, evidence quote, and recommended action — constrained by a strict JSON schema so it cannot hallucinate fields
-   - The final risk level is the higher of the rule tier and the LLM tier
-5. **Aggregation** — A final LLM call synthesizes the overall document summary, key concerns list, and next steps based on all section briefs
+   - A deterministic rule engine runs pattern matching first — flagging specific risk keywords, missing material terms, discretionary language, and one-sided clauses — and assigns a baseline risk tier
+   - The rule findings are injected into the LLM prompt so the model must acknowledge and build on them, not contradict them
+   - GPT-4o-mini applies a **document-type rubric** specific to the selected document kind (employment, NDA, lease, etc.), guiding it to focus on the clause patterns that matter most for that contract type
+   - Before assigning a risk level, the model produces a **Chain-of-Thought reasoning trace** — working through what each party is committed to, whether material terms are missing, and how the clause interacts with others. The risk label can only be assigned after this reasoning is written, preventing the model from jumping to conclusions
+   - All output is constrained by a strict JSON schema enforced at generation time — the model cannot hallucinate fields, invent clauses, or return unexpected values
+   - Evidence snippets are verified against the original text; if the quote doesn't exist verbatim, it is replaced with the closest fuzzy match or discarded entirely
+   - The final risk level is the higher of the rule engine tier and the LLM tier — the rule engine acts as a floor the LLM cannot undercut
+5. **Aggregation** — A final LLM call synthesizes the overall document summary, key concerns list, and next steps based on all section briefs, with the overall risk level fixed by the rule engine as a constraint the model must explain rather than decide
 6. **Real-time progress** — The frontend polls every 2 seconds and shows per-section progress as results arrive
 
 ## Project Structure
