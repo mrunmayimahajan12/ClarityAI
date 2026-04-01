@@ -1,6 +1,6 @@
 # ClarityAI
 
-ClarityAI is an AI-powered document analysis tool that helps you understand complex legal and professional documents. Upload a PDF or paste text, select the document type, and get a structured breakdown of every clause — with risk ratings, plain-English explanations, evidence quotes, and concrete next steps.
+ClarityAI is an AI-powered document analysis tool that helps you understand complex legal and professional documents. Upload a PDF or paste text, select the document type, and get a structured breakdown of every clause with risk ratings, plain-English explanations, evidence quotes, and concrete next steps.
 
 ## What It Does
 
